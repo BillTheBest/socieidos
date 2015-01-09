@@ -25,8 +25,14 @@ lc_min_items = int(get_file_config('min_items',50))
 lc_s3_object_max_age = int(get_file_config('s3_object_max_age',3600))
 lc_job_s3_interval_delete_old_objects_minutes = get_file_config('job_s3_interval_delete_old_objects_minutes',1)
 
-lc_s3_host = get_file_config('s3_host','fqdn_or_ip')
-lc_s3_port = int(get_file_config('s3_port',443))
+container_link_name = os.getenv('container_link_name',None)
+if container_link_name is None:
+	lc_s3_host = get_file_config('s3_host','fqdn_or_ip')
+	lc_s3_port = int(get_file_config('s3_port',443))
+else:
+	lc_s3_host = os.getenv(container_link_name+'_PORT_10101_TCP_ADDR',None)
+	lc_s3_port = int(os.getenv(container_link_name+'_PORT_10101_TCP_PORT',None))
+
 lc_s3_connect = get_file_config('s3_connect',"boto.connect_s3(lc_s3_akia,lc_s3_secret,is_secure=False,host=lc_s3_host,port=lc_s3_port,calling_format=OrdinaryCallingFormat())")
 
 lc_s3_store = get_file_config('s3_store','True')
