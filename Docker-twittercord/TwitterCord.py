@@ -72,7 +72,7 @@ def watch_tweet_stream(s3_store,
     while True:
         try:
             response = api.request(twitter_request,twitter_filter)
-            for item in response.get_iterator(wait=10):
+            for item in response.get_iterator():
                 if 'text' in item:
                     if check_retweeted_status and 'retweeted_status' in item and item['retweeted_status']:
                         logging.info("Tweet is a retweet.")
