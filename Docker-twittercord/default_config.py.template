@@ -1,0 +1,51 @@
+import os
+import sys
+import logging
+
+sys.path.append("/config")
+try:
+	from custom_config import *
+except:
+	pass
+
+def get_file_config(name,value):
+        try:
+                variable = eval(name)
+        except:
+                variable = os.getenv(name,os.getenv(name, value))
+        print('Variable Set: '),
+        print(str(name)+": "),
+        print(str(variable))
+        return variable
+
+
+lc_geo_box_coords_long_lat = get_file_config('geo_box_coords_long_lat','sw_long,sw_lat,ne_long,ne_lat')
+lc_min_items = int(get_file_config('min_items',50))
+
+lc_s3_object_max_age = int(get_file_config('s3_object_max_age',3600))
+lc_job_s3_interval_delete_old_objects_minutes = get_file_config('job_s3_interval_delete_old_objects_minutes',1)
+
+lc_s3_host = get_file_config('s3_host','fqdn_or_ip')
+lc_s3_port = int(get_file_config('s3_port',443))
+lc_s3_connect = get_file_config('s3_connect',"boto.connect_s3(lc_s3_akia,lc_s3_secret,is_secure=False,host=lc_s3_host,port=lc_s3_port,calling_format=OrdinaryCallingFormat())")
+
+lc_s3_store = get_file_config('s3_store','True')
+lc_s3_bucket_name = get_file_config('s3_bucket_name','social')
+lc_s3_store_in = get_file_config('s3_store_in','selfie')
+lc_s3_object_expiration_time = get_file_config('s3_object_expiration_time','timedelta(days=1)')
+lc_s3_object_url_timeout = int(get_file_config('s3_object_url_timeout',1200))
+
+lc_twitter_request = get_file_config('twitter_request','statuses/filter')
+lc_twitter_filter = get_file_config('twitter_filter',"{'track':'selfie'}")
+
+lc_check_geo_coords = get_file_config('check_geo_coords','False')
+lc_check_retweeted_status = get_file_config('check_retweeted_status','False')
+lc_check_possibly_sensitive = get_file_config('check_possibly_sensitive','False')
+
+lc_get_objects_query_cache_seconds = int(get_file_config('get_objects_query_cache_seconds',5))
+
+lc_s3_akia = get_file_config('s3_akia','s3_access_key')
+lc_s3_secret = get_file_config('s3_secret','s3_secret')
+
+#app keys
+lc_twitter_keys = get_file_config('twitter_keys',"['key1','key2','key3','key4']")

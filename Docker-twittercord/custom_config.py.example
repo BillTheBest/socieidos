@@ -1,0 +1,33 @@
+
+# REQUIRED
+s3_host = 'ip_or_fqdn'
+s3_akia = 's3_access_key'
+s3_secret = 's3_secret_key'
+s3_bucket_name = 'social'
+s3_store_in = 'selfie'
+
+
+twitter_keys = "['app_key1','app_key2','user_key1','user_key2']"
+twitter_filter = "{'track':'selfie'}"
+
+# OPTIONAL
+s3_port = 10101
+s3_connect = "boto.connect_s3(lc_s3_akia,lc_s3_secret,is_secure=False,host=lc_s3_host,port=lc_s3_port,calling_format=OrdinaryCallingFormat())"
+s3_store = 'True'
+s3_object_expiration_time = 'timedelta(days=1)'
+s3_object_url_timeout = 1200
+s3_object_max_age = 3600
+job_s3_interval_delete_old_objects_minutes = 1
+min_items = 50
+
+get_objects_query_cache_seconds = 5
+
+twitter_request = 'statuses/filter'
+geo_box_coords_long_lat = '-125,24,-14,83'
+check_geo_coords = 'True'
+check_retweeted_status = 'True'
+check_possibly_sensitive = 'True'
+
+
+
+
