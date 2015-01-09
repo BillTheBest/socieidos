@@ -35,7 +35,6 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s: '
 app = Flask(__name__)
 img_session = requests.Session()
 
-print(lc_s3_connect)
 s3conn = eval(lc_s3_connect)
 
 while True:
@@ -44,6 +43,16 @@ while True:
         break
     except Exception,e:
         logging.error(str(e))
+
+    try:
+        logging.info('Creating bucket: '+lc_s3_bucket_name)
+        s3conn.create_bucket(lc_s3_bucket_name)
+    except Exception,e:
+        logging.error(str(e))
+
+    time.sleep(1)
+
+
 
 def check_coords(grid,point):
    return grid[0] < point[1] < grid[2] and grid[1] < point[0] < grid[3]
