@@ -103,9 +103,10 @@ def watch_tweet_stream(s3_store,
                                 logging.info('Tweet media is not a photo.')
                     else:
                         logging.info('Tweet does not have media.')
+                    continue
                 elif 'message' in item and item['code'] == 88:
                     print 'SUSPEND, RATE LIMIT EXCEEDED: %s\n' % item['message']
-                break
+                    break
         except Exception,e:
             logging.error(str(e))
             logging.debug("Sleeping for 30 seconds")
