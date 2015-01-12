@@ -18,6 +18,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 import json
+from flask import Markup
+import urllib2
+import tarfile,sys
+import StringIO
+import gzip
 
 scheduler = BackgroundScheduler()
 
@@ -34,6 +39,34 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s: '
 
 app = Flask(__name__)
 img_session = requests.Session()
+
+
+def untar(fname):
+    tar = tarfile.open(fname)
+    wd = os.getcwd()
+    os.chdir("/app")
+    tar.extractall()
+    tar.close()
+    os.chdir(wd)
+
+
+if lc_template_package_url:
+    logging.info("Downloading package from "+lc_template_package_url)
+    filename = lc_template_package_url.split('/')[-1]
+    outFilePath = "/app/package.tar"
+    response = urllib2.urlopen(lc_template_package_url)
+    compressedFile = StringIO.StringIO(response.read())
+    decompressedFile = gzip.GzipFile(fileobj=compressedFile)
+
+    with open(outFilePath, 'w') as outfile:
+        outfile.write(decompressedFile.read())
+
+    untar("/app/package.tar")
+
+
+
+ 
+
 
 s3conn = eval(lc_s3_connect)
 
@@ -73,6 +106,7 @@ def watch_tweet_stream(s3_store,
         try:
             response = api.request(twitter_request,twitter_filter)
             for item in response.get_iterator():
+                #pprint(item['filter_level'])
                 if 'text' in item:
                     if check_retweeted_status and 'retweeted_status' in item and item['retweeted_status']:
                         logging.info("Tweet is a retweet.")
@@ -109,8 +143,8 @@ def watch_tweet_stream(s3_store,
                     break
         except Exception,e:
             logging.error(str(e))
-            logging.debug("Sleeping for 30 seconds")
-            time.sleep(30)
+            logging.debug("Sleeping for 12 seconds")
+            time.sleep(12)
 
 
 
@@ -164,7 +198,7 @@ def capture_photo_to_object(s3_object_expiration_time,
 def get_keys_for_hashtag(hashtag,return_limit=25,):
     candidates = list(bucket.list(hashtag))
     max_return = min(len(candidates),return_limit)
-    return (candidates[:-max_return])[::-1]
+    return (candidates[-max_return:])[::-1]
 
 def get_object_url_from_key(key,s3_object_url_timeout):
     return key.generate_url(s3_object_url_timeout)
@@ -205,7 +239,7 @@ def create_array_urls(s3_object_url_timeout,s3_store_in):
 def dashboard():
     dict = create_array_urls(lc_s3_object_url_timeout,lc_s3_store_in)
     objects = create_hash_objects(dict)
-    return render_template('default.html',objects=objects['response']['objects'])
+    return render_template(lc_template_file,objects=objects['response']['objects'],template_param=eval(lc_template_param))
 
 @app.route('/v1/objects', methods=['GET'])
 def get_objects():

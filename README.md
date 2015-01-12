@@ -43,6 +43,19 @@ The following parameters can be configured by either the ```/config/custom_confi
 	check_retweeted_status = 'True'
 	check_possibly_sensitive = 'True'
 
+	template_package_url = 'http://youpackage.tar.gz'
+	template_file = 'default-us.html.template'
+	template_param = """{
+        'page_title': 'EMC CODE - Project Socieidos',
+        'page_header1': 'EMC CODE',
+        'carousel_image_first': '',
+        'carousel_image_last': '',
+        'page_footer':  \"\"\" 
+                        \"\"\",
+        'author_text':  \"\"\"
+                        <p><strong>project socieidos</strong><br>
+                        <a href="http://emccode.github.io">emccode.github.io</a></p>\"\"\" }"""
+
 
 ### Definitions
 
@@ -74,6 +87,9 @@ The following parameters can be configured by either the ```/config/custom_confi
 	check_geo_coords = Whether to decide on processing by checking the coorindates
 	check_retweeted_status = Whether to decide on processing by checking if retweet
 	check_possibly_sensitive = Whether to decide on processing by checking if sensitive material flag is True
+	lc_template_package_url = The URL where the .tar.gz package exists to be downloaded and uncompressed into /app
+	template_file = The file that does or will exist at /app/templates to be rendered in response to HTTP requests to /
+	template_param = The parameters that will be passed to the default.html.template file or template_file.
 
 Configuration
 =============
@@ -100,22 +116,50 @@ Configuring with environment variables takes priority over the items configured 
 
 Presentation
 ============
-Included is a default HTML page with a carousel to view images.  This is available by default from ```/```.  The page that is being rendered comes from ```/templates/default.html```.
+Included is a default HTML page with a carousel to view images.  This is available from ```/```.  The page that is being rendered comes from ```/templates/default.html.template```.
 
-If you would like to modify the page, then you can do so by placing the iterative portion that declares the image tags wherever you please and in whatever format.  
+### Static File
+If you would like to modify the page, then you can do so by placing the iterative portion that declares the image tags wherever you please and in whatever format.  This could require that you build another version of ```TwitterCord``` that includes your static files.
 
 	{% for object in objects %}
 	<li><img src="{{ object['object_url'] }}"></li>
 	{% endfor %}
 
-If you want to completely replace the HTML content, another option is to create a new Docker image from this one that runs an ```ADD``` for specific local sub-directories of ```static``` and ```templates```.  Lots of options.
+
+### Template\_Param
+There is an option to specify a ```template_param``` environment variable by adding it to your ```costom_config.py``` file as follows.  The parameters listed are used within the ```default.html.template``` file.  See this file to verify what the parameters fill in.  
+
+	template_param = {
+	        'page_title': 'EMC CODE - Project Socieidos',
+	        'page_header1': 'EMC CODE',
+	        'carousel_image_first': "",
+	        'carousel_image_last': "",
+	        'page_footer':  """ 
+	                        """,
+	        'author_text':  """
+	                        <p><strong>project socieidos</strong><br>
+	                        <a href="http://emccode.github.io">emccode.github.io</a></p>"""
+	}
+
+### Template\_Package\_Url
+The most flexible and dynamic method would be to leverage this option.  Here you an specify the ```template_package_url``` parameter.  Upon application startup it will download a ```.tar.gz.``` file from this location and extract it, overwriting the files under ```/app```.  The file should include the following but is not limited in this way.  It does require that you locate files under directories to be compatible with ```Python Flask```.
+
+	/templates/default.html-custom.template
+	/static/*
+	
+### Template\_Package\_Url and Template\_Param
+The combination of these two methods will yield the ultimate flexibility and dynamicness.
+	
+### Creating a Package
+The following command will create a package that contains the correct directory structure.
+```tar -zcvf package.tar.gz templates/default.html.template static/```
 
 
 API
 ===
 If you are interested in operating this in more of a micro-service architecture, there is a simple API available to expose the objects that are stored.  You can call ```GET /v1/objects``` to get a response as a ```JSON``` object.  This would allow you to use a carousel that leveraged AJAX or some active form of requesting images without refreshing a page.
 
-## Control Plane - Consumption
+## Get Objects
 ```GET /v1/objects```  
 
 OK 200
@@ -149,6 +193,12 @@ Big thanks goes out to #DevHi5 and **emc {code&#7449;}**s
 - Matt Cowger
 - Jonas Rosland
 
+
+## Future and Contributions
+- Hyper-Media based REST API
+- Better logging
+- Control Plane API
+- Other social media applications
 
 Licensing
 ---------

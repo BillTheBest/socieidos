@@ -28,6 +28,20 @@ check_geo_coords = 'True'
 check_retweeted_status = 'True'
 check_possibly_sensitive = 'True'
 
+#template_package_url = 'http://youpackage.tar.gz'
+#template_file = 'default-us.html.template'
+
+template_param = """{
+        'page_title': 'EMC CODE - Project Socieidos',
+        'page_header1': 'EMC CODE',
+        'carousel_image_first': '',
+        'carousel_image_last': '',
+        'page_footer':  \"\"\" 
+                        \"\"\",
+        'author_text':  \"\"\"
+                        <p><strong>project socieidos</strong><br>
+                        <a href="http://emccode.github.io">emccode.github.io</a></p>\"\"\"
+}"""
 
 
 

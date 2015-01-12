@@ -54,3 +54,20 @@ lc_s3_akia = get_file_config('s3_akia','s3_access_key')
 lc_s3_secret = get_file_config('s3_secret','s3_secret')
 
 lc_twitter_keys = get_file_config('twitter_keys',"['key1','key2','key3','key4']")
+
+lc_template_package_url = get_file_config('template_package_url','')
+
+lc_template_file = get_file_config('template_file','default.html.template')
+
+default_template_param = """{
+        'page_title': 'EMC CODE - Project Socieidos',
+        'page_header1': 'EMC CODE',
+        'carousel_image_first': '',
+        'carousel_image_last': '',
+        'page_footer':  \"\"\" 
+                        \"\"\",
+        'author_text':  \"\"\"
+                        <p><strong>project socieidos</strong><br>
+                        <a href="http://emccode.github.io">emccode.github.io</a></p>\"\"\"
+}"""
+lc_template_param = get_file_config('template_param',default_template_param)
